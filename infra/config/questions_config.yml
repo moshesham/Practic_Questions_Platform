@@ -1,0 +1,18 @@
+questions:
+  - name: sql_basic_select
+    difficulty: easy
+    tags: [sql, select, beginner]
+    active: true
+    description: Basic SELECT query practice
+
+  - name: sql_join_operations
+    difficulty: medium
+    tags: [sql, joins, intermediate]
+    active: true
+    description: Practice with different types of JOIN operations
+
+  - name: sql_aggregate_functions
+    difficulty: medium
+    tags: [sql, aggregation, group by]
+    active: true
+    description: Learn to use aggregate functions and GROUP BY

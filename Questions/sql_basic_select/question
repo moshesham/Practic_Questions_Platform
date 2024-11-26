@@ -1,0 +1,11 @@
+SQL Basic SELECT Challenge
+
+Write a SQL query to:
+1. Select all employees from the Sales department
+2. Order the results by salary in descending order
+3. Limit the result to the top 10 employees
+
+Expected output columns:
+- employee_id
+- department
+- salary

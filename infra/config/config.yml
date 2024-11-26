@@ -1,4 +1,4 @@
-fields:
+fields_old:
   - name: search_id
     type: int
     sqlite_type: INTEGER
@@ -21,3 +21,31 @@ fields:
     values:
       min: 1
       max: 5
+
+# Data generation configuration
+database:
+  type: sqlite
+  output_path: output/generated_data.db
+
+data_generation:
+  num_records: 10000
+  seed: 42
+
+fields:
+  - name: employee_id
+    type: int
+    values:
+      min: 1
+      max: 1000
+  - name: department
+    type: str
+    values:
+      - Sales
+      - Marketing
+      - Engineering
+      - HR
+  - name: salary
+    type: int
+    values:
+      min: 30000
+      max: 150000

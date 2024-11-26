@@ -3,27 +3,32 @@ import random
 import sqlite3
 import yaml
 import pandas as pd
-import os
 from pathlib import Path
 
-SCRIPT_DIR = Path(__file__).parent
-QUESTIONS_DIR = SCRIPT_DIR / 'Questions'
-SLOUTIONS_DIR = SCRIPT_DIR / 'Sloutions'
-OUTPUT_DIR = SCRIPT_DIR / 'output'
-DBOUTPUT_DIR = SCRIPT_DIR / 'output' / 'generated_data.db'
 
 class DataGenerator:
-    def __init__(self, sample_data=None, yaml_config=None, num_records=10000):
+    def __init__(self, sample_data=None, yaml_config=None, num_records=10000, base_dir=None):
+        # Use the calling script's directory as base if not provided
+        self.base_dir = base_dir or Path(__file__).resolve().parent.parent
+
+        # Ensure all directory paths are relative to the base directory
+        self.output_dir = self.base_dir / 'output'
+        self.config_dir = self.base_dir / 'config'
+
+        # Create output directory if it doesn't exist
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+
         self.sample_data = sample_data
-        self.yaml_config = yaml_config
+        self.yaml_config = yaml_config or self.config_dir / 'config.yml'
         self.num_records = num_records
         self.records = []
-        if yaml_config:
-            self.load_yaml_config(yaml_config)
 
-        # DBOUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        # Load configuration
+        if self.yaml_config:
+            self.load_yaml_config(self.yaml_config)
 
-        self.db_path=DBOUTPUT_DIR
+        # Set up database path
+        self.db_path = self.output_dir / 'generated_data.db'
         self.conn = sqlite3.connect(self.db_path)
 
     def load_yaml_config(self, yaml_file):
@@ -52,22 +57,37 @@ class DataGenerator:
         self.records = pd.DataFrame(records)
 
     def write_to_csv(self, filename='generated_data.csv'):
-        self.records.to_csv(filename, index=False)
-        print(f"CSV file '{filename}' with {self.num_records} records has been generated.")
+        # Ensure the output directory exists
+        output_file = self.output_dir / filename
+        self.records.to_csv(output_file, index=False)
+        print(f"CSV file '{output_file}' with {self.num_records} records has been generated.")
 
     def save_to_sqlite(self):
         self.records.to_sql('searches', self.conn, if_exists='replace', index=False)
         self.conn.close()
         print(f"Data saved to SQLite database '{self.db_path}'.")
 
-# Initialize DataGenerator with YAML configuration from the config folder
-data_gen = DataGenerator(yaml_config='config/config.yml', num_records=10000)
 
-# Generate records
-data_gen.generate_records()
+def main():
+    # Use current script's directory to determine base directory
+    base_dir = Path(__file__).resolve().parent.parent
 
-# Write to CSV
-data_gen.write_to_csv()
+    # Initialize DataGenerator with relative paths
+    data_gen = DataGenerator(
+        yaml_config=base_dir / 'config' / 'config.yml',
+        num_records=10000,
+        base_dir=base_dir
+    )
 
-# Save data to SQLite
-data_gen.save_to_sqlite()
+    # Generate records
+    data_gen.generate_records()
+
+    # Write to CSV
+    data_gen.write_to_csv()
+
+    # Save data to SQLite
+    data_gen.save_to_sqlite()
+
+
+if __name__ == "__main__":
+    main()
