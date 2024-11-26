@@ -1,0 +1,23 @@
+fields:
+  - name: search_id
+    type: int
+    sqlite_type: INTEGER
+    values:
+      min: 1
+      max: 1000
+  - name: search_term
+    type: str
+    sqlite_type: TEXT
+    values: ['rabbit', 'dog', 'cat', 'airline', 'hotel', 'quality', 'politics', 'national', 'education', 'summer', 'law', 'approach', 'physical', 'church', 'station', 'police', 'sister', 'fire']
+  - name: clicked
+    type: int
+    sqlite_type: INTEGER
+    values:
+      min: 0
+      max: 1
+  - name: search_results_position
+    type: int
+    sqlite_type: INTEGER
+    values:
+      min: 1
+      max: 5
