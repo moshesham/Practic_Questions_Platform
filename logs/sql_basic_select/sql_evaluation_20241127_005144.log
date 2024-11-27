@@ -1,0 +1,3 @@
+2024-11-27 00:51:44,256 - sql_evaluation - ERROR - Error evaluating question sql_basic_select: No SQL solution file found
+2024-11-27 00:51:44,257 - sql_evaluation - ERROR - Error evaluating question sql_join_operations: No SQL solution file found
+2024-11-27 00:51:44,258 - sql_evaluation - ERROR - Error evaluating question sql_aggregate_functions: No SQL solution file found

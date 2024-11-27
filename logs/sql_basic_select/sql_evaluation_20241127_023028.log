@@ -1,0 +1,5 @@
+2024-11-27 02:30:28,007 - sql_evaluation - INFO - Evaluating question: sql_basic_select
+2024-11-27 02:30:28,008 - sql_evaluation - INFO - Difficulty: easy
+2024-11-27 02:30:28,008 - sql_evaluation - INFO - Tags: sql, select, beginner
+2024-11-27 02:30:28,019 - sql_evaluation - ERROR - Validation error for sql_basic_select: No active question
+2024-11-27 02:30:28,020 - sql_evaluation - ERROR - Error evaluating question sql_basic_select: No active question

@@ -8,11 +8,11 @@ questions:
   - name: sql_join_operations
     difficulty: medium
     tags: [sql, joins, intermediate]
-    active: true
+    active: false
     description: Practice with different types of JOIN operations
 
   - name: sql_aggregate_functions
     difficulty: medium
     tags: [sql, aggregation, group by]
-    active: true
+    active: false
     description: Learn to use aggregate functions and GROUP BY
