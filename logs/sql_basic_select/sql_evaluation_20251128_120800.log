@@ -1,5 +1,0 @@
-2025-11-28 12:08:00,761 - sql_evaluation - INFO - Evaluating question: sql_basic_select
-2025-11-28 12:08:00,761 - sql_evaluation - INFO - Difficulty: easy
-2025-11-28 12:08:00,761 - sql_evaluation - INFO - Tags: sql, select, beginner
-2025-11-28 12:08:00,763 - sql_evaluation - ERROR - Validation error for sql_basic_select: No solution DataFrame file found
-2025-11-28 12:08:00,763 - sql_evaluation - INFO - No Active Evaluating question sql_basic_select: No active question
