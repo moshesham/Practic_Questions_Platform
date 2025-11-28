@@ -55,7 +55,7 @@ Practic_Questions_Platform/
 │   └── sql_basic_select/        # Question folder
 │       ├── question             # Problem description
 │       ├── example_solution.sql # Reference solution
-│       └── Sloutions/          
+│       └── Sloutions/           # Note: typo to be fixed (see TASK-011)
 │           └── sloution_df.csv  # Expected output
 │
 ├── infra/                        # Core infrastructure
