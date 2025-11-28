@@ -1,0 +1,109 @@
+# =============================================================================
+# SQL Practice Questions Platform - Docker Compose
+# =============================================================================
+# Orchestrates the SQL Practice Platform services for local development
+# and running practice sessions.
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Main Platform Service
+  # ---------------------------------------------------------------------------
+  sql-practice-platform:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sql-practice-platform:latest
+    container_name: sql-practice-platform
+    volumes:
+      # Persist generated data
+      - ./output:/app/output
+      # Persist user progress
+      - ./users:/app/users
+      # Persist logs
+      - ./logs:/app/logs
+      # Allow custom questions
+      - ./Questions:/app/Questions:ro
+      # Allow custom config
+      - ./infra/config:/app/infra/config:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    stdin_open: true
+    tty: true
+    command: ["python", "SQl_answer.py"]
+    networks:
+      - sql-platform-network
+
+  # ---------------------------------------------------------------------------
+  # Data Generator Service (one-shot)
+  # ---------------------------------------------------------------------------
+  data-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sql-practice-platform:latest
+    container_name: sql-data-generator
+    volumes:
+      - ./output:/app/output
+      - ./infra/config:/app/infra/config:ro
+    command: ["python", "-m", "infra.DataGenerator"]
+    profiles:
+      - tools
+    networks:
+      - sql-platform-network
+
+  # ---------------------------------------------------------------------------
+  # Interactive Shell Service
+  # ---------------------------------------------------------------------------
+  interactive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sql-practice-platform:latest
+    container_name: sql-practice-interactive
+    volumes:
+      - ./output:/app/output
+      - ./users:/app/users
+      - ./logs:/app/logs
+      - ./Questions:/app/Questions
+      - ./infra:/app/infra
+    stdin_open: true
+    tty: true
+    entrypoint: ["/bin/bash"]
+    profiles:
+      - dev
+    networks:
+      - sql-platform-network
+
+networks:
+  sql-platform-network:
+    driver: bridge
+
+# =============================================================================
+# Usage Examples:
+#
+# Build and run the main platform:
+#   docker compose up --build
+#
+# Run in detached mode:
+#   docker compose up -d
+#
+# Generate data only:
+#   docker compose run --rm data-generator
+#
+# Interactive development shell:
+#   docker compose run --rm interactive
+#
+# View logs:
+#   docker compose logs -f
+#
+# Stop all services:
+#   docker compose down
+#
+# Rebuild after code changes:
+#   docker compose up --build --force-recreate
+#
+# Clean up (remove volumes and networks):
+#   docker compose down -v --remove-orphans
+# =============================================================================
