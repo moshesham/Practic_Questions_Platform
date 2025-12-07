@@ -1,2 +1,4 @@
-pandas>=2.0.0
-pyyaml>=6.0
+pandas
+pyyaml
+uuid
+logging

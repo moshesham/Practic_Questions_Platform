@@ -27,6 +27,7 @@ This platform helps users learn and practice SQL at multiple difficulty levels w
 ### Prerequisites
 - Python 3.10+
 - SQLite (included with Python)
+- (Optional) Docker for containerized usage
 - (Optional) Ollama for AI features
 
 ### Installation
@@ -48,6 +49,48 @@ python -m infra.DataGenerator --num-records 2000 --seed 123 --table attempts_run
 # Solve a question
 python SQl_answer.py sql_basic_select
 ```
+
+## 🐳 Docker Usage
+
+The platform can be run in Docker containers for easy setup and consistent environments.
+
+### Quick Start with Docker
+
+```bash
+# Build and run the platform
+docker compose up --build
+
+# Or run with Docker directly
+docker build -t sql-practice-platform .
+docker run --rm sql-practice-platform
+```
+
+### Docker Commands
+
+```bash
+# Generate test data only
+docker compose run --rm data-generator
+
+# Run interactively (for development)
+docker compose run --rm interactive
+
+# Run with persistent data
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Clean up
+docker compose down -v
+```
+
+### Volume Mounts
+
+The Docker setup supports persistent data through volume mounts:
+- `./output` - Generated databases and CSV files
+- `./users` - User progress tracking
+- `./logs` - Application logs
+- `./Questions` - Custom practice questions
 
 ## 📁 Project Structure
 
@@ -82,6 +125,9 @@ Practic_Questions_Platform/
 ├── logs/                         # Application logs
 ├── users/                        # User progress files
 │
+├── Dockerfile                   # Docker image definition
+├── docker-compose.yml           # Docker services orchestration
+├── .dockerignore                # Docker build exclusions
 ├── PRODUCT_ROADMAP.md           # Development roadmap
 ├── requirements.txt             # Python dependencies
 ├── SQl_answer.py               # Main entry point
