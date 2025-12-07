@@ -5,6 +5,8 @@ from typing import Optional, Union
 import logging
 import difflib
 
+from .exceptions import FileIOError, DatabaseError, ValidationError, SecurityError
+
 class AnswerValidator:
     def __init__(
         self,
@@ -62,6 +64,9 @@ class AnswerValidator:
     def load_sql(self) -> None:
         """
         Load SQL query from the solution file
+        
+        Raises:
+            FileIOError: If the SQL file cannot be read.
         """
         try:
             with open(self.db_filename, 'r') as file:
@@ -69,15 +74,52 @@ class AnswerValidator:
                 self.query = file.read().strip()
             
             self.logger.info(f"SQL query loaded from {self.db_filename}")
-        except Exception as e:
-            self.logger.error(f"Error loading SQL file: {e}")
-            raise
+        except (IOError, OSError) as e:
+            raise FileIOError(f"Failed to read SQL file '{self.db_filename}': {e}") from e
+
+    def _validate_query_safety(self, query: str) -> None:
+        """Validate query for forbidden operations and ensure it is read-only.
+
+        Only allows queries starting with SELECT or WITH and blocks write/DDL verbs.
+
+        Raises:
+            SecurityError: If the query is unsafe to execute.
+        """
+
+        if not query:
+            raise SecurityError("Query is empty")
+
+        normalized = query.strip().upper()
+
+        if not (normalized.startswith("SELECT") or normalized.startswith("WITH")):
+            raise SecurityError("Only read-only SELECT queries are allowed")
+
+        forbidden_keywords = [
+            "DROP",
+            "DELETE",
+            "UPDATE",
+            "INSERT",
+            "ALTER",
+            "CREATE",
+            "TRUNCATE",
+            "EXEC",
+            "PRAGMA",
+        ]
+
+        for keyword in forbidden_keywords:
+            if keyword in normalized:
+                raise SecurityError(f"Query contains forbidden operation: {keyword}")
 
     def execute_query(self) -> None:
         """
         Execute the loaded SQL query against the generated database
+        
+        Raises:
+            SecurityError: If the query is unsafe.
+            DatabaseError: If database connection or execution fails.
         """
         try:
+            self._validate_query_safety(self.query)
             # Establish database connection
             conn = sqlite3.connect(self.db_path)
             
@@ -88,9 +130,10 @@ class AnswerValidator:
             conn.close()
             
             self.logger.info(f"Query executed successfully. Rows returned: {len(self.answer_df)}")
-        except Exception as e:
-            self.logger.error(f"Error executing SQL query: {e}")
-            raise
+        except sqlite3.Error as e:
+            raise DatabaseError(f"Database error executing query: {e}") from e
+        except pd.errors.DatabaseError as e:
+            raise DatabaseError(f"Pandas database error: {e}") from e
 
     def validate_answer(self, solution_file: Optional[Union[Path, str]] = None) -> bool:
         """
@@ -101,12 +144,16 @@ class AnswerValidator:
         
         Returns:
             bool: True if solution matches, False otherwise
+            
+        Raises:
+            FileIOError: If solution file cannot be read.
+            ValidationError: If DataFrame structures don't match.
         """
         # Use predefined solution path if no specific file is provided
         solution_file = solution_file or self.solution_df_path
         
         if not solution_file or not Path(solution_file).exists():
-            raise FileNotFoundError("No solution DataFrame file found")
+            raise FileIOError(f"Solution DataFrame file not found: {solution_file}")
         
         try:
             # Load expected solution
@@ -120,9 +167,10 @@ class AnswerValidator:
             
             return is_match
         
-        except Exception as e:
-            self.logger.error(f"Answer validation failed: {e}")
-            raise
+        except pd.errors.EmptyDataError as e:
+            raise FileIOError(f"Solution file is empty or invalid: {solution_file}") from e
+        except pd.errors.ParserError as e:
+            raise FileIOError(f"Failed to parse solution CSV file '{solution_file}': {e}") from e
 
     def _validate_dataframe_structure(self, df1, df2):
         """
@@ -131,11 +179,14 @@ class AnswerValidator:
         Args:
             df1 (pd.DataFrame): Generated answer DataFrame
             df2 (pd.DataFrame): Expected solution DataFrame
+            
+        Raises:
+            ValidationError: If DataFrame structures don't match.
         """
         # Check column names
         if list(df1.columns) != list(df2.columns):
             column_diff = list(set(df1.columns) ^ set(df2.columns))
-            raise ValueError(f"Column mismatch: {column_diff}")
+            raise ValidationError(f"Column mismatch: {column_diff}")
         
         # Optional: Check data types (can be customized)
         for col in df1.columns:

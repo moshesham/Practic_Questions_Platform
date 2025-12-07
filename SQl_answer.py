@@ -1,3 +1,5 @@
+"""Entry point script to generate data and evaluate active SQL questions."""
+
 from pathlib import Path
 import sys
 import yaml
@@ -10,8 +12,12 @@ from infra.DataGenerator import DataGenerator
 from infra.user import User
 from infra.AnswerValidator import AnswerValidator
 from infra.logging_config import LoggerManager
+from infra.config.schemas import validate_questions_config
 
-def main():
+
+def main() -> None:
+    """Generate data, evaluate active questions, and record user progress."""
+
     # Generate initial data
     data_gen = DataGenerator(yaml_config='infra/config/config.yml')
     data_gen.generate_records()
@@ -21,6 +27,7 @@ def main():
     # Load questions configuration
     with open('infra/config/questions_config.yml', 'r') as f:
         questions_config = yaml.safe_load(f)
+    validate_questions_config(questions_config)
 
     # Demonstrate user creation and tracking
     user = User(username='student1')
@@ -43,7 +50,7 @@ def main():
             
             try:
                 # Initialize AnswerValidator for the specific question
-                validator = AnswerValidator( base_dir=project_root, question_name=question_name)
+                validator = AnswerValidator(base_dir=project_root, question_name=question_name)
 
                 # Log question details
                 logger.info(f"Evaluating question: {question_name}")
@@ -78,21 +85,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # # Basic usage
-    # validator = AnswerValidator(question_name='sql_basic_select')
-    # validator.load_sql()
-    # validator.execute_query()
-    # is_correct = validator.validate_answer()
-
-    # # Print additional details
-    # if is_correct:
-    #     print("Solution is correct!")
-    # else:
-    #     print("Solution needs improvement")
-
-
-    # # With custom solution file
-    # validator = AnswerValidator(question_name='sql_basic_select')
-    # validator.load_sql()
-    # validator.execute_query()
-    # is_correct = validator.validate_answer(solution_file='/path/to/custom/solution.csv')
