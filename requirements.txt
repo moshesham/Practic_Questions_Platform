@@ -1,13 +1,4 @@
-# =============================================================================
-# SQL Practice Questions Platform - Dependencies
-# =============================================================================
-
-# Core Dependencies
-pandas>=2.0.0          # Data manipulation and analysis
-pyyaml>=6.0            # YAML configuration parsing
-
-# Note: The following are part of Python standard library and don't need to be installed:
-# - sqlite3 (database operations)
-# - uuid (unique identifier generation)
-# - logging (application logging)
-# - pathlib (path manipulation)
+pandas
+pyyaml
+uuid
+logging

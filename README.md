@@ -40,8 +40,11 @@ cd Practic_Questions_Platform
 # Install dependencies
 pip install -r requirements.txt
 
-# Generate test data
+# Generate test data (uses infra/config/config.yml)
 python -m infra.DataGenerator
+
+# Override at runtime if needed
+python -m infra.DataGenerator --num-records 2000 --seed 123 --table attempts_run
 
 # Solve a question
 python SQl_answer.py sql_basic_select
