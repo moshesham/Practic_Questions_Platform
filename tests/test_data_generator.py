@@ -4,6 +4,7 @@ import sqlite3
 import pandas as pd
 
 from infra.DataGenerator import DataGenerator
+from infra.config.schemas import validate_config, validate_questions_config
 
 
 def test_generate_records_creates_csv_and_table(tmp_path, monkeypatch):
@@ -55,3 +56,162 @@ def test_generate_records_creates_csv_and_table(tmp_path, monkeypatch):
         assert count == 10, "Table should contain generated rows"
     finally:
         conn.close()
+
+
+def test_validate_num_records():
+    dg = DataGenerator()
+    # Valid
+    dg._validate_num_records(1)
+    dg._validate_num_records(10000000)
+    dg._validate_num_records(1000)
+    # Invalid
+    try:
+        dg._validate_num_records(0)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    try:
+        dg._validate_num_records(10000001)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    try:
+        dg._validate_num_records(-1)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    try:
+        dg._validate_num_records("100")
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+
+
+def test_validate_seed():
+    dg = DataGenerator()
+    # Valid
+    dg._validate_seed(None)
+    dg._validate_seed(0)
+    dg._validate_seed(42)
+    # Invalid
+    try:
+        dg._validate_seed(-1)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    try:
+        dg._validate_seed("42")
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+
+
+def test_validate_config():
+    dg = DataGenerator()
+    # Valid config (simplified)
+    valid_config = {
+        "data_generation": {"num_records": 1000, "seed": 42, "table_name": "test"},
+        "fields": [
+            {"name": "id", "type": "int", "values": {"min": 1, "max": 10}},
+            {"name": "name", "type": "str", "values": ["a", "b"]},
+            {"name": "active", "type": "bool", "values": [True, False]}
+        ]
+    }
+    dg._validate_config(valid_config)
+    # Invalid: missing data_generation
+    invalid_config1 = {"fields": []}
+    try:
+        dg._validate_config(invalid_config1)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    # Invalid: missing fields
+    invalid_config2 = {"data_generation": {}}
+    try:
+        dg._validate_config(invalid_config2)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    # Invalid: empty fields
+    invalid_config3 = {"data_generation": {}, "fields": []}
+    try:
+        dg._validate_config(invalid_config3)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    # Invalid: field missing keys
+    invalid_config4 = {"data_generation": {}, "fields": [{"name": "id"}]}
+    try:
+        dg._validate_config(invalid_config4)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+    # Invalid: wrong type
+    invalid_config5 = {"data_generation": {}, "fields": [{"name": "id", "type": "float", "values": {}}]}
+    try:
+        dg._validate_config(invalid_config5)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+
+
+def test_invalid_config_raises_error(tmp_path):
+    # Test that invalid config raises error during init
+    invalid_config = tmp_path / "invalid.yml"
+    with open(invalid_config, 'w') as f:
+        f.write("invalid: yaml\n")
+    try:
+        DataGenerator(yaml_config=invalid_config, base_dir=tmp_path)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+
+
+def test_validate_config_schema():
+    # Valid config
+    valid_config = {
+        "data_generation": {"num_records": 1000, "seed": 42, "table_name": "test"},
+        "fields": [
+            {"name": "id", "type": "int", "values": {"min": 1, "max": 10}},
+            {"name": "name", "type": "str", "values": ["a", "b"]},
+            {"name": "active", "type": "bool", "values": [True, False]}
+        ]
+    }
+    validate_config(valid_config)  # Should not raise
+    # Invalid: num_records too large
+    invalid_config = valid_config.copy()
+    invalid_config["data_generation"]["num_records"] = 20000000
+    try:
+        validate_config(invalid_config)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
+
+
+def test_validate_questions_config_schema():
+    # Valid questions config
+    valid_questions = {
+        "questions": [
+            {
+                "name": "test_question",
+                "difficulty": "BEGINNER",
+                "time_limit_seconds": 300,
+                "hints_available": 5,
+                "tags": ["test"],
+                "active": True,
+                "description": "Test",
+                "prerequisite_questions": [],
+                "sql_features": ["SELECT"],
+                "learning_objectives": ["Learn"]
+            }
+        ]
+    }
+    validate_questions_config(valid_questions)  # Should not raise
+    # Invalid: wrong difficulty
+    invalid_questions = valid_questions.copy()
+    invalid_questions["questions"][0]["difficulty"] = "INVALID"
+    try:
+        validate_questions_config(invalid_questions)
+        assert False, "Should raise ValueError"
+    except ValueError:
+        pass
