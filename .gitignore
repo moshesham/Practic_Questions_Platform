@@ -1,3 +1,11 @@
+# ==============================================================================
+# Python SQL Practice Questions Platform - .gitignore
+# ==============================================================================
+
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -20,9 +28,12 @@ parts/
 sdist/
 var/
 wheels/
+pip-wheel-metadata/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # PyInstaller
 *.manifest
@@ -35,14 +46,17 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+.nox/
 .coverage
 .coverage.*
 .cache
 nosetests.xml
 coverage.xml
 *.cover
+*.py,cover
 .hypothesis/
 .pytest_cache/
+pytestdebug.log
 
 # Translations
 *.mo
@@ -51,6 +65,8 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
+db.sqlite3
+db.sqlite3-journal
 
 # Flask stuff:
 instance/
@@ -61,24 +77,52 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/_static/
+docs/_templates/
 
 # PyBuilder
 target/
+.pybuilder/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
+
+# IPython
+profile_default/
+ipython_config.py
 
 # pyenv
 .python-version
 
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
 # Environments
 .env
+.env.local
+.env.*.local
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+.virtualenv/
+pythonenv*
 
 # Spyder project settings
 .spyderproject
@@ -87,36 +131,281 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+# mkdocs documentation
+/site
+
 # mypy
 .mypy_cache/
+.dmypy.json
+dmypy.json
 
-# IDE
-.idea/
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# -----------------------------------------------------------------------------
+# IDEs and Editors
+# -----------------------------------------------------------------------------
+
+# VSCode
 .vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# PyCharm
+.idea/
+.idea/*
+*.iml
+*.iws
+*.ipr
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Vim
 *.swp
 *.swo
+*~
+.vim/
 
-# Logs
-logs/
-*.log
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
 
-# Generated data files (can be regenerated)
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Eclipse
+.project
+.pydevproject
+.settings/
+
+# -----------------------------------------------------------------------------
+# Operating Systems
+# -----------------------------------------------------------------------------
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# -----------------------------------------------------------------------------
+# Project Specific - SQL Practice Platform
+# -----------------------------------------------------------------------------
+
+# Generated database files (can be regenerated)
 output/*.csv
 output/*.db
+output/*.sqlite
+output/*.sqlite3
+output/generated_data.*
+infra/output/
 infra/generated_data.csv
 infra/generated_data.db
 
-# User progress files
+# User progress files (contains personal data)
 users/
+users/*
+!users/.gitkeep
 
-# Mac OS
-.DS_Store
+# Logs directory
+logs/
+logs/*
+!logs/.gitkeep
+*.log
+*.log.*
+
+# Temporary SQL files
+*.sql~
+*.sql.bak
+
+# Question answer attempts (temporary)
+Questions/*/attempts/
+Questions/*/temp/
+
+# AI model files (if using local models)
+models/
+*.gguf
+*.bin
+*.pt
+*.pth
+*.h5
+*.pkl
+
+# Cache directories
+.cache/
+*.cache
+
+# -----------------------------------------------------------------------------
+# Development & Testing
+# -----------------------------------------------------------------------------
+
+# Test output
+test-results/
+test-reports/
+.tox/
+.nox/
+
+# Profiling
+*.prof
+*.lprof
+profile_results/
+
+# Benchmarks
+benchmarks/results/
+.benchmarks/
+
+# Temporary development files
+scratch/
+sandbox/
+playground/
+experiments/
+
+# -----------------------------------------------------------------------------
+# CI/CD & Deployment
+# -----------------------------------------------------------------------------
 
 # Docker
 .docker/
+.dockerignore.swp
+docker-compose.override.yml
+.env.docker
 
-# Temporary files
+# Kubernetes
+k8s/*.secret.yaml
+k8s/*.local.yaml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# -----------------------------------------------------------------------------
+# Documentation
+# -----------------------------------------------------------------------------
+
+# Build outputs
+docs/build/
+docs/dist/
+site/
+
+# API documentation
+api-docs/build/
+
+# -----------------------------------------------------------------------------
+# Backup & Temporary Files
+# -----------------------------------------------------------------------------
+
 tmp/
 temp/
 *.tmp
 *.bak
+*.backup
+*.old
+*.orig
+*~
+.*.sw[a-z]
+.sw[a-z]
+
+# Compressed files (unless needed)
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# -----------------------------------------------------------------------------
+# Security & Secrets
+# -----------------------------------------------------------------------------
+
+# Environment variables with secrets
+.env.production
+.env.staging
+secrets.yaml
+secrets.json
+*.key
+*.pem
+*.crt
+*.p12
+
+# API keys and credentials
+.credentials/
+credentials.json
+token.json
+.api_keys
+
+# SSH keys
+id_rsa
+id_rsa.pub
+known_hosts
+
+# -----------------------------------------------------------------------------
+# Optional: Keep certain patterns
+# -----------------------------------------------------------------------------
+
+# Keep empty directories with .gitkeep
+!.gitkeep
+!**/.gitkeep
+
+# Keep example configuration files
+!config/*.example
+!.env.example
+!docker-compose.example.yml
+
+# ==============================================================================
+# End of .gitignore
+# ==============================================================================
