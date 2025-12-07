@@ -251,6 +251,7 @@ output/*.db
 output/*.sqlite
 output/*.sqlite3
 output/generated_data.*
+infra/output/
 infra/generated_data.csv
 infra/generated_data.db
 
