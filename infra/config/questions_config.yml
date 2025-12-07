@@ -1,18 +1,58 @@
+# SQL Practice Questions Configuration
+# Updated to use new difficulty level system
+
 questions:
   - name: sql_basic_select
-    difficulty: easy
+    difficulty: BEGINNER
+    time_limit_seconds: 300
+    hints_available: 5
     tags: [sql, select, beginner]
     active: true
     description: Basic SELECT query practice
+    prerequisite_questions: []
+    sql_features:
+      - SELECT
+      - FROM
+      - WHERE
+    learning_objectives:
+      - Understand basic SELECT syntax
+      - Filter data with WHERE clause
+      - Use simple comparison operators
 
   - name: sql_join_operations
-    difficulty: medium
+    difficulty: INTERMEDIATE
+    time_limit_seconds: 600
+    hints_available: 3
     tags: [sql, joins, intermediate]
     active: false
     description: Practice with different types of JOIN operations
+    prerequisite_questions:
+      - sql_basic_select
+    sql_features:
+      - JOIN
+      - INNER JOIN
+      - LEFT JOIN
+    learning_objectives:
+      - Understand JOIN operations
+      - Combine data from multiple tables
+      - Use appropriate JOIN types
 
   - name: sql_aggregate_functions
-    difficulty: medium
+    difficulty: INTERMEDIATE
+    time_limit_seconds: 600
+    hints_available: 3
     tags: [sql, aggregation, group by]
     active: false
     description: Learn to use aggregate functions and GROUP BY
+    prerequisite_questions:
+      - sql_basic_select
+    sql_features:
+      - GROUP BY
+      - HAVING
+      - COUNT
+      - SUM
+      - AVG
+    learning_objectives:
+      - Use aggregate functions
+      - Group data effectively
+      - Filter grouped results with HAVING

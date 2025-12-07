@@ -1,11 +1,17 @@
 import pandas as pd
 import sqlite3
 from pathlib import Path
+from typing import Optional, Union
 import logging
 import difflib
 
 class AnswerValidator:
-    def __init__(self, answer_path=None, base_dir=None, question_name=None):
+    def __init__(
+        self,
+        answer_path: Optional[Union[Path, str]] = None,
+        base_dir: Optional[Union[Path, str]] = None,
+        question_name: Optional[str] = None
+    ) -> None:
         """
         Initialize AnswerValidator with flexible path resolution
         
@@ -32,8 +38,8 @@ class AnswerValidator:
             # Find SQL solution file in the question directory
             self.db_filename = next(self.question_path.glob('example_solution.sql'), None)
             
-            # Find solution DataFrame in the sloutions subdirectory
-            self.solution_df_path = self.question_path / 'sloutions' / 'sloution_df.csv'
+            # Find solution DataFrame in the solutions subdirectory
+            self.solution_df_path = self.question_path / 'solutions' / 'solution_df.csv'
             
             # Database path
             self.db_path = self.output_dir / 'generated_data.db'
@@ -53,7 +59,7 @@ class AnswerValidator:
         self.query = None
         self.answer_df = None
 
-    def load_sql(self):
+    def load_sql(self) -> None:
         """
         Load SQL query from the solution file
         """
@@ -67,7 +73,7 @@ class AnswerValidator:
             self.logger.error(f"Error loading SQL file: {e}")
             raise
 
-    def execute_query(self):
+    def execute_query(self) -> None:
         """
         Execute the loaded SQL query against the generated database
         """
@@ -86,7 +92,7 @@ class AnswerValidator:
             self.logger.error(f"Error executing SQL query: {e}")
             raise
 
-    def validate_answer(self, solution_file=None):
+    def validate_answer(self, solution_file: Optional[Union[Path, str]] = None) -> bool:
         """
         Validate the answer by comparing with expected solution
         

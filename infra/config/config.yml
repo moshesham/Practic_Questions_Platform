@@ -1,51 +1,59 @@
-fields_old:
-  - name: search_id
-    type: int
-    sqlite_type: INTEGER
-    values:
-      min: 1
-      max: 1000
-  - name: search_term
-    type: str
-    sqlite_type: TEXT
-    values: ['rabbit', 'dog', 'cat', 'airline', 'hotel', 'quality', 'politics', 'national', 'education', 'summer', 'law', 'approach', 'physical', 'church', 'station', 'police', 'sister', 'fire']
-  - name: clicked
-    type: int
-    sqlite_type: INTEGER
-    values:
-      min: 0
-      max: 1
-  - name: search_results_position
-    type: int
-    sqlite_type: INTEGER
-    values:
-      min: 1
-      max: 5
-
-# Data generation configuration
-database:
-  type: sqlite
-  output_path: output/generated_data.db
+# Data generation configuration for SQL practice platform
 
 data_generation:
   num_records: 10000
   seed: 42
+  table_name: searches
 
+# Fields drive the synthetic rows written to CSV/SQLite via infra.DataGenerator.
+# Supported types: int, str, bool.
 fields:
-  - name: employee_id
+  - name: user_id
     type: int
     values:
       min: 1
-      max: 1000
-  - name: department
-    type: str
-    values:
-      - Sales
-      - Marketing
-      - Engineering
-      - HR
-  - name: salary
+      max: 200
+
+  - name: question_id
     type: int
     values:
-      min: 30000
-      max: 150000
+      min: 1
+      max: 80
+
+  - name: difficulty
+    type: str
+    values: [BEGINNER, INTERMEDIATE, ADVANCED, EXPERT]
+
+  - name: category
+    type: str
+    values: [select, join, aggregate, window, cte, subquery]
+
+  - name: attempt_number
+    type: int
+    values:
+      min: 1
+      max: 5
+
+  - name: is_correct
+    type: bool
+    values: [true, false]
+
+  - name: time_ms
+    type: int
+    values:
+      min: 500
+      max: 600000  # up to 10 minutes
+
+  - name: hints_used
+    type: int
+    values:
+      min: 0
+      max: 5
+
+  - name: uses_ollama
+    type: bool
+    values: [true, false]
+
+  - name: client
+    type: str
+    values: [cli, ui, api]
