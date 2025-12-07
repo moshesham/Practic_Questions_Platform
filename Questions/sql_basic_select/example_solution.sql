@@ -1,5 +1,5 @@
 SELECT employee_id, department, salary
-FROM searches
+FROM employees
 WHERE department = 'Sales'
 ORDER BY salary DESC
-LIMIT 2;
+LIMIT 10;

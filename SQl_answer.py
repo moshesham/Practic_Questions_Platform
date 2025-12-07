@@ -34,6 +34,9 @@ def main():
         if question_config['active']:
             question_name = question_config['name']
             
+            # Mark the question as active for this user session
+            user.start_question(question_name)
+            
             # Set up logging for this question
             logger_manager = LoggerManager(question_name=question_name)
             logger = logger_manager.create_logger("sql_evaluation")
