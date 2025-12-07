@@ -35,3 +35,8 @@ class FileIOError(SQLPracticeError):
 class LoggingError(SQLPracticeError):
     """Raised when logging setup fails."""
     pass
+
+
+class SecurityError(SQLPracticeError):
+    """Raised when a SQL query is deemed unsafe for execution."""
+    pass
