@@ -3,7 +3,7 @@
 data_generation:
   num_records: 10000
   seed: 42
-  table_name: searches
+  table_name: employees
 
 # Fields drive the synthetic rows written to CSV/SQLite via infra.DataGenerator.
 # Supported types: int, str, bool.
@@ -19,6 +19,22 @@ fields:
     values:
       min: 1
       max: 80
+
+  - name: employee_id
+    type: int
+    values:
+      min: 1
+      max: 10000
+
+  - name: department
+    type: str
+    values: [Sales, Engineering, HR, Marketing, Finance, Support]
+
+  - name: salary
+    type: int
+    values:
+      min: 40000
+      max: 200000
 
   - name: difficulty
     type: str
